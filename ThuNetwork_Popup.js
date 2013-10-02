@@ -144,7 +144,7 @@ function Login(user, password)
 	});
 }
 
-
+var has_password_changed = false;
 $(document).ready(function(){
 $.post(IPSelfLoginURL, "action=check_online", function(data) {
 	if (data =='')
@@ -153,28 +153,31 @@ $.post(IPSelfLoginURL, "action=check_online", function(data) {
 		$('body').append('<table><tbody></tbody></table>');
 		document.getElementById('online').onclick = function(){
 			var password = document.getElementById('password').value;
-			var md5_password = hex_md5(password);
 			var user = document.getElementById('user').value;
 			if(user == '' || password == '')
 			{
 				alert('Form must be filled');
 				return;
 			}
+			var md5_password = password;
+			if (has_password_changed)
+				md5_password = hex_md5(password);
+
 			var url_data = "username=" + user + "&password=" + md5_password +
 			"&drop=0&type=1&n=100";
 			$.post(IPSelfLoginURL,url_data, function(data){
 				if (!isNaN(data[0]))//登陆成功返回的数据
 				{
 					//$('div').replaceWith('登陆成功');
-					setCookie('user', document.getElementById('user').value);
-					setCookie('password', document.getElementById('password').value);
+					setCookie('user', user);
+					setCookie('md5_password', md5_password);
 					$('div').replaceWith('登陆成功');
 					Login(user, md5_password);
 				}
 				else if(data == 'online_num_error')
 				{
-					setCookie('user', document.getElementById('user').value);
-					setCookie('password', document.getElementById('password').value);
+					setCookie('user', user);
+					setCookie('md5_password', md5_password);
 					$('div').replaceWith('请断开不必要的连接');
 					Login(user, md5_password);
 				}
@@ -196,9 +199,12 @@ $.post(IPSelfLoginURL, "action=check_online", function(data) {
 				document.getElementById('online').onclick();
 		};
 		var user = getCookie('user');
-		var password = getCookie('password');
+		var md5_password = getCookie('md5_password');
 		document.getElementById('user').value = user;
-		document.getElementById('password').value = password;
+		document.getElementById('password').value = md5_password;
+		document.getElementById('password').onchange = function(){
+			has_password_changed = true;
+		};
 	}
 	else
 	{
@@ -209,7 +215,7 @@ $.post(IPSelfLoginURL, "action=check_online", function(data) {
 			window.colse();
 			return;
 		}
-		var md5_password = hex_md5(getCookie('password'));
+		var md5_password = getCookie('md5_password');
 		
 		$('body').append('<div>IP<input type="text" name="ip" id="ip"/><input type="button" value="上线" id="online" /></div>');
 		$('body').append('<table><tbody></tbody></table>');
