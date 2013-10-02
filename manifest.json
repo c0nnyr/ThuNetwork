@@ -1,0 +1,16 @@
+{
+  "name": "ThuNetwork",
+  "manifest_version": 2,
+  "version": "1.0",
+  "description": "辅助登录清华校园网的Chrome插件",
+  "browser_action": {
+    "default_icon": "icon.png",
+	"default_popup": "Popup.html" 
+  },
+  "permissions":["https://usereg.tsinghua.edu.cn/*", "http://net.tsinghua.edu.cn/*","http://166.111.8.120/cgi-bin/do_login", "http://www.whereismyip.com/"]//,
+  //"content_scripts":[{
+  //"js":["script/jquery.js","script/md5.js", "ThuNetwork.js"],
+  //"matches":["http://net.tsinghua.edu.cn/*"],
+  //"run_at": "document_end"
+  //}]
+}
